@@ -23,8 +23,10 @@
   "name":"gamejam",
   "resources":[
     {"id":{"name":"obj_enemy_basic","path":"objects/obj_enemy_basic/obj_enemy_basic.yy",},},
+    {"id":{"name":"obj_enemy_heavy","path":"objects/obj_enemy_heavy/obj_enemy_heavy.yy",},},
     {"id":{"name":"obj_enemy_projectile","path":"objects/obj_enemy_projectile/obj_enemy_projectile.yy",},},
     {"id":{"name":"obj_enemy_ranged","path":"objects/obj_enemy_ranged/obj_enemy_ranged.yy",},},
+    {"id":{"name":"obj_enemy_rush","path":"objects/obj_enemy_rush/obj_enemy_rush.yy",},},
     {"id":{"name":"obj_enemy","path":"objects/obj_enemy/obj_enemy.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
     {"id":{"name":"obj_wall","path":"objects/obj_wall/obj_wall.yy",},},

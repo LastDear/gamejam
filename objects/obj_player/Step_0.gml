@@ -53,11 +53,24 @@ if (abs(knock_hspd) < 0.1) {
 
 
 // =========================
-// СМЕНА СПРАЙТА СТОЙКИ
+// СМЕНА ВИЗУАЛЬНОГО ПАКА
 // =========================
-if (!is_attacking && !is_dashing) {
-    if (k1) spr_idle = Sprite1;
-    if (k2) spr_idle = Sprite3;
+if (k1) style_mode = 1;
+if (k2) style_mode = 2;
+
+if (style_mode == 2) {
+    spr_idle = spr_b_player_idle;
+    spr_run = spr_b_player_run_hit;
+    spr_jump = spr_b_player_jump;
+    spr_dash = spr_b_player_dodge;
+    spr_hurt = spr_b_player_hit;
+}
+else {
+    spr_idle = Sprite1;
+    spr_run = Sprite3;
+    spr_jump = Sprite1;
+    spr_dash = Sprite1;
+    spr_hurt = Sprite1;
 }
 
 
@@ -231,7 +244,29 @@ if (is_attacking) {
     }
 }
 else {
-    sprite_index = spr_idle;
+    var move_input = d - a;
+    var move_visual_speed = abs(hspd - knock_hspd);
+
+    if (is_dashing) {
+        sprite_index = spr_dash;
+        image_speed = 0.35;
+    }
+    else if (hurt_timer > 0) {
+        sprite_index = spr_hurt;
+        image_speed = 0.20;
+    }
+    else if (!on_ground) {
+        sprite_index = spr_jump;
+        image_speed = 0.18;
+    }
+    else if (move_input != 0 || move_visual_speed > 0.2) {
+        sprite_index = spr_run;
+        image_speed = 0.30;
+    }
+    else {
+        sprite_index = spr_idle;
+        image_speed = 0.20;
+    }
 }
 
 

@@ -10,10 +10,16 @@ jump_speed = -12;
 dir = true;
 
 // =========================
-// СПРАЙТЫ
+// СПРАЙТЫ / ВИЗУАЛЬНЫЕ ПАКИ
 // =========================
+style_mode = 2; // 1 = старые, 2 = новые
+
 spr_idle = Sprite1;
-spr_attack = Sprite_Attack;
+spr_run = Sprite3;
+spr_jump = Sprite1;
+spr_dash = Sprite1;
+spr_hurt = Sprite1;
+spr_attack = spr_b_player_hit;
 
 // =========================
 // АТАКА
