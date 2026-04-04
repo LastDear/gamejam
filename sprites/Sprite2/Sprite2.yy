@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":0,
   "parent":{
-    "name":"gamejam",
-    "path":"gamejam.yyp",
+    "name":"spr",
+    "path":"folders/spr.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
