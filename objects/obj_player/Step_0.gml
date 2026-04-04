@@ -170,7 +170,7 @@ if (attack && !is_attacking && !attack_cooldown && !is_dashing) {
 
     sprite_index = spr_attack;
     image_index = 0;
-    image_speed = attack_anim_speed;
+
 
     alarm[0] = ceil(room_speed * attack_cooldown_time);
 }
@@ -240,7 +240,7 @@ if (is_attacking) {
 
         sprite_index = spr_idle;
         image_index = 0;
-        image_speed = 0.2;
+        image_speed = 1;
     }
 }
 else {
@@ -249,23 +249,18 @@ else {
 
     if (is_dashing) {
         sprite_index = spr_dash;
-        image_speed = 0.35;
     }
     else if (hurt_timer > 0) {
         sprite_index = spr_hurt;
-        image_speed = 0.20;
     }
     else if (!on_ground) {
         sprite_index = spr_jump;
-        image_speed = 0.18;
     }
     else if (move_input != 0 || move_visual_speed > 0.2) {
         sprite_index = spr_run;
-        image_speed = 0.30;
     }
     else {
         sprite_index = spr_idle;
-        image_speed = 0.20;
     }
 }
 

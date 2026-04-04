@@ -61,10 +61,10 @@ dash_rhythm_invul = false;
 // ХИТБОКС АТАКИ
 // все значения относительно игрока
 // =========================
-attack_offset_left = 10;
-attack_offset_right = 50;
+attack_offset_left = 20;
+attack_offset_right = 140;
 
-attack_offset_top = -50;
+attack_offset_top = -140;
 attack_offset_bottom = 10;
 
 // =========================
