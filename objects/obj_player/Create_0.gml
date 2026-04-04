@@ -23,9 +23,11 @@ attack_cooldown = false;
 damage_applied = false;
 attack_rhythm_bonus = false;
 
+
+attack_rhythm_damage_mult = 1.20;
+
 attack_hit_frame = 0;
 attack_damage = 25;
-attack_rhythm_damage_mult = 1.20;
 
 attack_knock_x = 10;
 attack_knock_y = -2;
