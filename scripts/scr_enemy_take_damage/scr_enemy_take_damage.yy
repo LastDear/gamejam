@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_enemy_take_damage",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_enemy_take_damage",
+  "parent":{
+    "name":"gamejam",
+    "path":"gamejam.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
