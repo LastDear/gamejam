@@ -60,3 +60,27 @@ Temporary Items
 
 # GMRT build directory
 Build
+
+# Сборки и кэш (никогда не коммить!)
+bin/
+cache/
+
+# Временные файлы IDE
+*.yydebug
+*.log
+*.png.bak
+*.jpg.bak
+
+# Системные мусорные файлы
+Thumbs.db
+.DS_Store
+desktop.ini
+.vs/
+.vscode/
+.idea/
+
+# Платформенные настройки (если не шарите между ПК)
+# Раскомментируй, если у команды разные ОС/пути
+# options/windows/
+# options/macos/
+# options/linux/
