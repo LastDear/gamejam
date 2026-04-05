@@ -1,17 +1,17 @@
-base_move_speed = 4.0;
-base_jump_speed = -12;
+base_move_speed = 6.0;
+base_jump_speed = -13;
 base_attack_damage = 25;
 base_attack_knock_x = 10;
 base_attack_knock_y = -2;
 base_attack_anim_speed = 1;
 base_attack_cooldown_time = 0.3;
 base_max_hp = 100;
-base_dash_speed = 11;
-base_dash_time = 7;
-base_dash_cooldown_time = 30;
+base_dash_speed = 13;
+base_dash_time = 10;
+base_dash_cooldown_time = 100;
 base_dash_rhythm_speed_bonus = 4;
 base_dash_rhythm_time_bonus = 4;
-base_rhythm_window = 5;
+base_rhythm_window = 4;
 base_attack_rhythm_damage_mult = 1.20;
 base_score_rhythm_mult = 1.20;
 base_grav_acc = 0.35;
@@ -85,9 +85,9 @@ knock_hspd = 0;
 knock_friction = 0.82;
 invulnerable_timer = 0;
 
-rhythm_bpm = 95;
+rhythm_bpm = 120;
 rhythm_interval = room_speed * 60 / rhythm_bpm;
-rhythm_timer = 0;
+rhythm_timer = 13;
 rhythm_window = base_rhythm_window;
 rhythm_feedback_timer = 0;
 rhythm_feedback_text = "";
@@ -97,7 +97,7 @@ score = 0;
 score_hit_base = 100;
 score_rhythm_mult = base_score_rhythm_mult;
 
-stance_switch_cooldown_time = 24;
+stance_switch_cooldown_time = 200;
 stance_switch_cooldown = 0;
 stance_switch_bonus_time = room_speed * 6;
 stance_switch_bonus_timer = 0;
@@ -105,3 +105,9 @@ stance_switch_bonus_damage_mult = 1.25;
 stance_switch_bonus_move_mult = 1.20;
 stance_switch_bonus_score_mult = 1.50;
 stance_switch_bonus_active = false;
+
+
+camera_follow_lerp = 0.8;
+parallax_x_factor = 0.8;
+parallax_y_factor = 0.08;
+room1_camera_enabled = true;

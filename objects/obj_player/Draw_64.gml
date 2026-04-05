@@ -47,7 +47,7 @@ stance_bonus_ratio = clamp(stance_bonus_ratio, 0, 1);
 // фон панели HP
 draw_set_alpha(0.8);
 draw_set_color(c_black);
-draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 64, false);
+draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 100, false);
 
 // HP
  draw_set_alpha(1);
@@ -111,7 +111,7 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 64, false);
 
  draw_set_alpha(0.82);
  draw_set_color(c_black);
- draw_roundrect(panel_x1, panel_y1, panel_x2, panel_y2, false);
+ draw_roundrect(panel_x1 - 80, panel_y1, panel_x2, panel_y2, false);
  draw_set_alpha(1);
 
  draw_set_color(c_white);

@@ -98,7 +98,7 @@ if (stance_change_requested && allow_stance_change) {
             jump_speed = -11.2;
             max_hp = 140;
             damage_taken_mult = 0.75;
-            dash_cooldown_time = 38;
+            dash_cooldown_time = base_dash_cooldown_time * 1.4;
             break;
 
         case 2: // BETTER
@@ -110,10 +110,10 @@ if (stance_change_requested && allow_stance_change) {
             spr_dash = spr_b_player_dodge;
             spr_hurt = spr_b_player_idle;
             spr_attack = spr_b_player_hit;
-            rhythm_window = 8;
+            rhythm_window = base_rhythm_window*1.3;
             attack_rhythm_damage_mult = 1.35;
             score_rhythm_mult = 1.40;
-            dash_cooldown_time = 24;
+            dash_cooldown_time = base_dash_cooldown_time;
             break;
 
         case 3: // FASTER
@@ -132,7 +132,7 @@ if (stance_change_requested && allow_stance_change) {
             dash_time = 9;
             dash_rhythm_speed_bonus = 6;
             dash_rhythm_time_bonus = 5;
-            dash_cooldown_time = 18;
+            dash_cooldown_time = base_dash_cooldown_time*0.8;
             attack_damage = 21;
             break;
 
@@ -151,6 +151,7 @@ if (stance_change_requested && allow_stance_change) {
             attack_knock_y = -3;
             attack_cooldown_time = 0.42;
             score_rhythm_mult = 1.30;
+			dash_cooldown_time = base_dash_cooldown_time * 1.2;
             break;
     }
 
@@ -165,6 +166,7 @@ if (stance_change_requested && allow_stance_change) {
             invulnerable_timer = max(invulnerable_timer, 15);
             dash_cooldown = max(0, dash_cooldown - 10);
             rhythm_feedback_text = "STANCE SHIFT ON BEAT!";
+            audio_play_sound(snd_hit, 1, false);
         } else {
             stance_switch_bonus_timer = 0;
             stance_switch_bonus_active = false;
@@ -200,6 +202,7 @@ if (dash && !is_dashing && !is_attacking && dash_cooldown <= 0) {
         dash_hspd += (dir ? 1 : -1) * dash_rhythm_speed_bonus;
         invulnerable_timer = max(invulnerable_timer, dash_timer);
         rhythm_feedback_text = "DASH ON BEAT!";
+        audio_play_sound(snd_hit, 1, false);
     } else {
         rhythm_feedback_text = "OFF BEAT";
     }
@@ -262,6 +265,7 @@ if (attack && !is_attacking && !attack_cooldown && !is_dashing) {
     if (attack_rhythm_bonus) {
         rhythm_feedback_text = "HIT ON BEAT!";
         rhythm_feedback_timer = 12;
+        audio_play_sound(snd_hit, 1, false);
     }
 
     sprite_index = spr_attack;
@@ -365,4 +369,34 @@ if (place_meeting(x, y, obj_wall)) {
         }
     }
     vspd = 0;
+}
+
+
+// =========================
+// КАМЕРА / ПАРАЛЛАКС ROOM1
+// =========================
+if (room == Room1 && room1_camera_enabled && view_enabled) {
+    var cam = view_camera[0];
+    if (cam != -1) {
+        var view_w = camera_get_view_width(cam);
+        var view_h = camera_get_view_height(cam);
+        var target_cam_x = clamp(x - view_w * 0.5, 0, max(0, room_width - view_w));
+        var target_cam_y = clamp(y - view_h * 0.5, 0, max(0, room_height - view_h));
+
+        var cam_x = camera_get_view_x(cam);
+        var cam_y = camera_get_view_y(cam);
+        cam_x = lerp(cam_x, target_cam_x, camera_follow_lerp);
+        cam_y = lerp(cam_y, target_cam_y, camera_follow_lerp);
+
+        if (abs(cam_x - target_cam_x) < 0.5) cam_x = target_cam_x;
+        if (abs(cam_y - target_cam_y) < 0.5) cam_y = target_cam_y;
+
+        camera_set_view_pos(cam, cam_x, cam_y);
+
+        var bg_layer = layer_get_id("Background");
+        if (bg_layer != -1) {
+            layer_x(bg_layer, cam_x * parallax_x_factor);
+            layer_y(bg_layer, cam_y * parallax_y_factor);
+        }
+    }
 }
