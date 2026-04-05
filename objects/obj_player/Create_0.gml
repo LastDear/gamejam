@@ -11,7 +11,7 @@ base_dash_time = 7;
 base_dash_cooldown_time = 30;
 base_dash_rhythm_speed_bonus = 4;
 base_dash_rhythm_time_bonus = 4;
-base_rhythm_window = 6;
+base_rhythm_window = 5;
 base_attack_rhythm_damage_mult = 1.20;
 base_score_rhythm_mult = 1.20;
 base_grav_acc = 0.35;
@@ -74,17 +74,18 @@ attack_offset_right = 140;
 attack_offset_top = -140;
 attack_offset_bottom = 10;
 
-debug_draw_attack_hitbox = true;
+debug_draw_attack_hitbox = false;
+attack_fx_color = c_white;
 
 max_hp = base_max_hp;
 hp = max_hp;
 hurt_timer = 0;
-hurt_time = 18;
+hurt_time = 45;
 knock_hspd = 0;
 knock_friction = 0.82;
 invulnerable_timer = 0;
 
-rhythm_bpm = 50;
+rhythm_bpm = 95;
 rhythm_interval = room_speed * 60 / rhythm_bpm;
 rhythm_timer = 0;
 rhythm_window = base_rhythm_window;
@@ -98,9 +99,9 @@ score_rhythm_mult = base_score_rhythm_mult;
 
 stance_switch_cooldown_time = 24;
 stance_switch_cooldown = 0;
-stance_switch_bonus_time = 45;
+stance_switch_bonus_time = room_speed * 6;
 stance_switch_bonus_timer = 0;
 stance_switch_bonus_damage_mult = 1.25;
 stance_switch_bonus_move_mult = 1.20;
-stance_switch_bonus_score = 150;
+stance_switch_bonus_score_mult = 1.50;
 stance_switch_bonus_active = false;

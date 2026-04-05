@@ -17,6 +17,7 @@ function scr_player_take_damage(_player, _damage, _knock_x, _knock_y)
     _player.vspd = min(_player.vspd, _knock_y);
 
     if (_player.hp <= 0) {
+		audio_stop_all()
         room_restart();
     }
 }

@@ -21,3 +21,6 @@ spr_hit = spr_crois_hit;
 spr_damaged = spr_crois_damaged;
 sprite_index = spr_run;
 image_speed = 1;
+
+fire_anim_timer = 0;
+fire_anim_time = 10;

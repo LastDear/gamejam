@@ -67,7 +67,7 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 64, false);
  draw_set_color(c_white);
  if (stance_switch_bonus_active) {
      draw_set_color(make_color_rgb(255, 240, 120));
-     draw_text(score_x, score_y + 56, "BEAT SHIFT BONUS");
+     draw_text(score_x, score_y + 56, "SCORE BUFF x" + string(stance_switch_bonus_score_mult));
      draw_set_color(c_white);
  }
 
@@ -96,40 +96,54 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 64, false);
      draw_text(rhythm_x1 + 90, rhythm_y2 + 8, "...");
  }
 
- // Индикатор CD dash
- var bar_gap = 18;
- var mini_bar_w = 120;
+ // Правый верхний блок статусов
+ var gui_w = display_get_gui_width();
+ var panel_margin = 24;
+ var panel_w = 188;
+ var panel_x1 = gui_w - panel_w - panel_margin;
+ var panel_y1 = 24;
+ var panel_x2 = gui_w - panel_margin;
+ var panel_y2 = panel_y1 + 118;
+ var mini_bar_w = 132;
  var mini_bar_h = 12;
- var dash_bar_x = rhythm_x2 - mini_bar_w;
- var dash_bar_y = rhythm_y2 + 12;
+ var bar_x = panel_x2 - mini_bar_w - 14;
+ var text_x = panel_x1 - 60;
+
+ draw_set_alpha(0.82);
+ draw_set_color(c_black);
+ draw_roundrect(panel_x1, panel_y1, panel_x2, panel_y2, false);
+ draw_set_alpha(1);
+
+ draw_set_color(c_white);
+ draw_text(text_x, panel_y1 + 10, "DASH CD");
  draw_set_color(make_color_rgb(60, 60, 60));
- draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, false);
+ draw_rectangle(bar_x, panel_y1 + 12, bar_x + mini_bar_w, panel_y1 + 12 + mini_bar_h, false);
  draw_set_color(make_color_rgb(120, 180, 255));
- draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + mini_bar_w * dash_cd_ratio, dash_bar_y + 18 + mini_bar_h, false);
+ draw_rectangle(bar_x, panel_y1 + 12, bar_x + mini_bar_w * dash_cd_ratio, panel_y1 + 12 + mini_bar_h, false);
  draw_set_color(c_white);
- draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, true);
- draw_text(dash_bar_x, dash_bar_y, "DASH CD");
+ draw_rectangle(bar_x, panel_y1 + 12, bar_x + mini_bar_w, panel_y1 + 12 + mini_bar_h, true);
 
- // Индикатор CD стойки
- var stance_bar_x = dash_bar_x - mini_bar_w - bar_gap;
+ draw_set_color(c_white);
+ draw_text(text_x, panel_y1 + 44, "STANCE CD");
  draw_set_color(make_color_rgb(60, 60, 60));
- draw_rectangle(stance_bar_x, dash_bar_y + 18, stance_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, false);
+ draw_rectangle(bar_x, panel_y1 + 46, bar_x + mini_bar_w, panel_y1 + 46 + mini_bar_h, false);
  draw_set_color(make_color_rgb(255, 190, 90));
- draw_rectangle(stance_bar_x, dash_bar_y + 18, stance_bar_x + mini_bar_w * stance_cd_ratio, dash_bar_y + 18 + mini_bar_h, false);
+ draw_rectangle(bar_x, panel_y1 + 46, bar_x + mini_bar_w * stance_cd_ratio, panel_y1 + 46 + mini_bar_h, false);
  draw_set_color(c_white);
- draw_rectangle(stance_bar_x, dash_bar_y + 18, stance_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, true);
- draw_text(stance_bar_x, dash_bar_y, "STANCE CD");
+ draw_rectangle(bar_x, panel_y1 + 46, bar_x + mini_bar_w, panel_y1 + 46 + mini_bar_h, true);
 
- // Индикатор бонуса от смены в бит
- var bonus_bar_x = rhythm_x1;
- var bonus_bar_w = 140;
- draw_set_color(make_color_rgb(60, 60, 60));
- draw_rectangle(bonus_bar_x, dash_bar_y + 18, bonus_bar_x + bonus_bar_w, dash_bar_y + 18 + mini_bar_h, false);
- draw_set_color(make_color_rgb(255, 230, 120));
- draw_rectangle(bonus_bar_x, dash_bar_y + 18, bonus_bar_x + bonus_bar_w * stance_bonus_ratio, dash_bar_y + 18 + mini_bar_h, false);
  draw_set_color(c_white);
- draw_rectangle(bonus_bar_x, dash_bar_y + 18, bonus_bar_x + bonus_bar_w, dash_bar_y + 18 + mini_bar_h, true);
- draw_text(bonus_bar_x, dash_bar_y, "SHIFT BONUS");
+ draw_text(text_x, panel_y1 + 78, "SCORE BUFF");
+ draw_set_color(make_color_rgb(60, 60, 60));
+ draw_rectangle(bar_x, panel_y1 + 80, bar_x + mini_bar_w, panel_y1 + 80 + mini_bar_h, false);
+ draw_set_color(make_color_rgb(255, 230, 120));
+ draw_rectangle(bar_x, panel_y1 + 80, bar_x + mini_bar_w * stance_bonus_ratio, panel_y1 + 80 + mini_bar_h, false);
+ draw_set_color(c_white);
+ draw_rectangle(bar_x, panel_y1 + 80, bar_x + mini_bar_w, panel_y1 + 80 + mini_bar_h, true);
+ if (stance_switch_bonus_active) {
+     draw_set_color(make_color_rgb(255, 240, 120));
+     draw_text(text_x, panel_y1 + 98, "x" + string(stance_switch_bonus_score_mult) + " active");
+ }
 
  // Короткий фидбек
  if (rhythm_feedback_timer > 0) {

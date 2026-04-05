@@ -60,7 +60,7 @@ var stance_change_requested = (requested_stance != stance_mode || stance_name ==
 var allow_stance_change = (stance_switch_cooldown <= 0 || stance_name == "");
 
 if (stance_change_requested && allow_stance_change) {
-    var hp_ratio_keep = 1;
+    var_ratio_keep = 1;
     if (max_hp > 0) hp_ratio_keep = hp / max_hp;
     stance_mode = requested_stance;
 
@@ -92,7 +92,7 @@ if (stance_change_requested && allow_stance_change) {
             spr_run = spr_h_player_run;
             spr_jump = spr_h_player_jump;
             spr_dash = spr_h_player_dodge;
-            spr_hurt = spr_h_player_hit;
+            spr_hurt = spr_h_player_idle;
             spr_attack = spr_h_player_hit;
             move_speed = 3.3;
             jump_speed = -11.2;
@@ -105,10 +105,10 @@ if (stance_change_requested && allow_stance_change) {
             stance_name = "BETTER";
             stance_color = make_color_rgb(120, 220, 120);
             spr_idle = spr_b_player_idle;
-            spr_run = spr_b_player_run_hit;
+            spr_run = spr_b_player_run;
             spr_jump = spr_b_player_jump;
             spr_dash = spr_b_player_dodge;
-            spr_hurt = spr_b_player_hit;
+            spr_hurt = spr_b_player_idle;
             spr_attack = spr_b_player_hit;
             rhythm_window = 8;
             attack_rhythm_damage_mult = 1.35;
@@ -123,7 +123,7 @@ if (stance_change_requested && allow_stance_change) {
             spr_run = spr_f_player_run;
             spr_jump = spr_f_player_jump;
             spr_dash = spr_f_player_dodge;
-            spr_hurt = spr_f_player_hit;
+            spr_hurt = spr_f_player_idle;
             spr_attack = spr_f_player_hit;
             move_speed = 5.2;
             jump_speed = -13.2;
@@ -143,7 +143,7 @@ if (stance_change_requested && allow_stance_change) {
             spr_run = spr_s_player_run;
             spr_jump = spr_s_player_jump;
             spr_dash = spr_s_player_dodge;
-            spr_hurt = spr_s_player_hit;
+            spr_hurt = spr_s_player_idle;
             spr_attack = spr_s_player_hit;
             move_speed = 3.7;
             attack_damage = 34;
@@ -164,7 +164,6 @@ if (stance_change_requested && allow_stance_change) {
             stance_switch_bonus_active = true;
             invulnerable_timer = max(invulnerable_timer, 15);
             dash_cooldown = max(0, dash_cooldown - 10);
-            score += stance_switch_bonus_score;
             rhythm_feedback_text = "STANCE SHIFT ON BEAT!";
         } else {
             stance_switch_bonus_timer = 0;
@@ -300,7 +299,7 @@ if (is_attacking) {
         }
         if (stance_switch_bonus_active) {
             damage_mult *= stance_switch_bonus_damage_mult;
-            score_mult *= 1.15;
+            score_mult *= stance_switch_bonus_score_mult;
         }
 
         for (var i = 0; i < ds_list_size(list); i++) {

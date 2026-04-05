@@ -11,9 +11,9 @@ if (hurt_timer <= 0) {
 
         // Разворот в сторону игрока
         if (face_dir > 0) {
-            image_xscale = 1;
-        } else if (face_dir < 0) {
             image_xscale = -1;
+        } else if (face_dir < 0) {
+            image_xscale = 1;
         }
 
         // Держим дистанцию: отходим, если игрок близко; подходим, если слишком далеко
@@ -45,6 +45,8 @@ if (hurt_timer <= 0) {
             var spawn_x = x + image_xscale * fire_offset_x;
             var spawn_y = fire_y;
             var dir_angle = point_direction(spawn_x, spawn_y, player.x, target_y);
+
+            fire_anim_timer = fire_anim_time;
 
             var bullet = instance_create_layer(spawn_x, spawn_y, "Instances", obj_enemy_projectile);
             bullet.hspd = lengthdir_x(projectile_speed, dir_angle);
@@ -86,8 +88,12 @@ if (place_meeting(x, y, obj_wall)) {
 event_inherited();
 
 
+if (fire_anim_timer > 0) fire_anim_timer--;
+
 if (hurt_timer > 0) {
     sprite_index = spr_damaged;
+} else if (fire_anim_timer > 0) {
+    sprite_index = spr_hit;
 } else {
     sprite_index = spr_run;
 }

@@ -20,6 +20,7 @@ else {
     }
 
     if (is_charging) {
+        action_anim_timer = action_anim_time;
         hspd = charge_dir * charge_speed;
         charge_duration--;
         if (charge_duration <= 0) {
@@ -29,6 +30,7 @@ else {
     }
     else if (charge_windup > 0) {
         hspd = 0;
+        action_anim_timer = action_anim_time;
         charge_windup--;
         if (charge_windup <= 0) {
             is_charging = true;
@@ -56,8 +58,8 @@ var on_ground = place_meeting(x, y + 1, obj_wall);
 if (!on_ground) vspd += grav_acc;
 vspd = clamp(vspd, -100, max_fall_speed);
 
-if (hspd > 0) image_xscale = 1;
-else if (hspd < 0) image_xscale = -1;
+if (hspd > 0) image_xscale = -1;
+else if (hspd < 0) image_xscale = 1;
 
 x += hspd;
 if (place_meeting(x, y, obj_wall)) {
@@ -93,8 +95,12 @@ if (place_meeting(x, y, obj_player)) {
 event_inherited();
 
 
+if (action_anim_timer > 0) action_anim_timer--;
+
 if (hurt_timer > 0) {
     sprite_index = spr_damaged;
+} else if (charge_windup > 0 || is_charging || action_anim_timer > 0) {
+    sprite_index = spr_hit;
 } else {
     sprite_index = spr_run;
 }

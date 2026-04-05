@@ -33,8 +33,8 @@
   "nineSlice":null,
   "origin":9,
   "parent":{
-    "name":"group2",
-    "path":"folders/Sprites/group2.yy",
+    "name":"spr",
+    "path":"folders/spr.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

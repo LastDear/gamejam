@@ -15,3 +15,6 @@ image_speed = 1;
 contact_damage = 10;
 contact_knock_x = 6;
 contact_knock_y = -4;
+
+action_anim_timer = 0;
+action_anim_time = 10;
