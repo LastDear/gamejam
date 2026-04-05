@@ -33,10 +33,7 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{
-    "name":"Sprite5",
-    "path":"sprites/Sprite5/Sprite5.yy",
-  },
+  "spriteId":{"name":"spr_crois_run","path":"sprites/spr_crois_run/spr_crois_run.yy",},
   "spriteMaskId":null,
   "visible":true,
 }

@@ -12,6 +12,42 @@ var attack = mouse_check_button_pressed(mb_left);
 var dash = keyboard_check_pressed(vk_shift);
 
 // =========================
+// РИТМ
+// =========================
+rhythm_timer += 1;
+if (rhythm_timer >= rhythm_interval) {
+    rhythm_timer -= rhythm_interval;
+}
+
+var beat_phase = rhythm_timer;
+var beat_center = rhythm_interval * 0.5;
+var beat_distance = abs(beat_phase - beat_center);
+var in_rhythm = (beat_distance <= rhythm_window);
+
+// =========================
+// ТАЙМЕРЫ
+// =========================
+if (hurt_timer > 0) {
+    hurt_timer--;
+    if (hurt_timer <= 0) {
+        image_blend = c_white;
+    }
+}
+if (invulnerable_timer > 0) invulnerable_timer--;
+if (dash_cooldown > 0) dash_cooldown--;
+if (rhythm_feedback_timer > 0) rhythm_feedback_timer--;
+if (stance_switch_cooldown > 0) stance_switch_cooldown--;
+if (stance_switch_bonus_timer > 0) {
+    stance_switch_bonus_timer--;
+    stance_switch_bonus_active = true;
+} else {
+    stance_switch_bonus_active = false;
+}
+
+knock_hspd *= knock_friction;
+if (abs(knock_hspd) < 0.1) knock_hspd = 0;
+
+// =========================
 // СТОЙКИ
 // =========================
 var requested_stance = stance_mode;
@@ -20,7 +56,10 @@ if (k2) requested_stance = 2;
 if (k3) requested_stance = 3;
 if (k4) requested_stance = 4;
 
-if (requested_stance != stance_mode || stance_name == "") {
+var stance_change_requested = (requested_stance != stance_mode || stance_name == "");
+var allow_stance_change = (stance_switch_cooldown <= 0 || stance_name == "");
+
+if (stance_change_requested && allow_stance_change) {
     var hp_ratio_keep = 1;
     if (max_hp > 0) hp_ratio_keep = hp / max_hp;
     stance_mode = requested_stance;
@@ -116,36 +155,25 @@ if (requested_stance != stance_mode || stance_name == "") {
     }
 
     hp = clamp(round(max_hp * hp_ratio_keep), 1, max_hp);
-}
 
-// =========================
-// РИТМ
-// =========================
-rhythm_timer += 1;
-if (rhythm_timer >= rhythm_interval) {
-    rhythm_timer -= rhythm_interval;
-}
+    if (stance_name != "") {
+        stance_switch_cooldown = stance_switch_cooldown_time;
 
-var beat_phase = rhythm_timer;
-var beat_center = rhythm_interval * 0.5;
-var beat_distance = abs(beat_phase - beat_center);
-var in_rhythm = (beat_distance <= rhythm_window);
-
-// =========================
-// ТАЙМЕРЫ
-// =========================
-if (hurt_timer > 0) {
-    hurt_timer--;
-    if (hurt_timer <= 0) {
-        image_blend = c_white;
+        if (in_rhythm) {
+            stance_switch_bonus_timer = stance_switch_bonus_time;
+            stance_switch_bonus_active = true;
+            invulnerable_timer = max(invulnerable_timer, 15);
+            dash_cooldown = max(0, dash_cooldown - 10);
+            score += stance_switch_bonus_score;
+            rhythm_feedback_text = "STANCE SHIFT ON BEAT!";
+        } else {
+            stance_switch_bonus_timer = 0;
+            stance_switch_bonus_active = false;
+            rhythm_feedback_text = "STANCE SHIFT";
+        }
+        rhythm_feedback_timer = 16;
     }
 }
-if (invulnerable_timer > 0) invulnerable_timer--;
-if (dash_cooldown > 0) dash_cooldown--;
-if (rhythm_feedback_timer > 0) rhythm_feedback_timer--;
-
-knock_hspd *= knock_friction;
-if (abs(knock_hspd) < 0.1) knock_hspd = 0;
 
 // =========================
 // ПРОВЕРКА ПОЛА
@@ -162,6 +190,11 @@ if (dash && !is_dashing && !is_attacking && dash_cooldown <= 0) {
     is_dashing = true;
     dash_timer = dash_time;
     dash_hspd = (dir ? 1 : -1) * dash_speed;
+
+    if (stance_switch_bonus_active) {
+        dash_timer += 2;
+        dash_hspd += (dir ? 1 : -1) * 1.5;
+    }
 
     if (in_rhythm) {
         dash_timer += dash_rhythm_time_bonus;
@@ -194,7 +227,10 @@ if (is_dashing) {
         hspd = 0;
     }
 } else {
-    var move_hspd = (d - a) * move_speed;
+    var current_move_speed = move_speed;
+    if (stance_switch_bonus_active) current_move_speed *= stance_switch_bonus_move_mult;
+
+    var move_hspd = (d - a) * current_move_speed;
     hspd = move_hspd + knock_hspd;
 
     if (on_ground && space) vspd = jump_speed;
@@ -261,6 +297,10 @@ if (is_attacking) {
         if (attack_rhythm_bonus) {
             damage_mult = attack_rhythm_damage_mult;
             score_mult = score_rhythm_mult;
+        }
+        if (stance_switch_bonus_active) {
+            damage_mult *= stance_switch_bonus_damage_mult;
+            score_mult *= 1.15;
         }
 
         for (var i = 0; i < ds_list_size(list); i++) {

@@ -18,6 +18,12 @@ charge_cooldown = irandom_range(10, 25);
 charge_dir = 1;
 is_charging = false;
 
+spr_run = spr_cook_run;
+spr_hit = spr_cook_hit;
+spr_damaged = spr_cook_damaged;
+sprite_index = spr_run;
+image_speed = 1;
+
 contact_damage = 14;
 contact_knock_x = 9;
 contact_knock_y = -5;

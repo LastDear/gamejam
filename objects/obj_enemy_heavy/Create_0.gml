@@ -12,6 +12,6 @@ contact_knock_y = -6;
 
 aggro_range = 220;
 slam_cooldown_max = 70;
-slam_cooldown = irandom_range(20, 50);
+slam_cooldown = irandom_range(30, 50);
 slam_windup_max = 18;
 slam_timer = 0;

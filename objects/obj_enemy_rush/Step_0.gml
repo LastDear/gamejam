@@ -91,3 +91,10 @@ if (place_meeting(x, y, obj_player)) {
 }
 
 event_inherited();
+
+
+if (hurt_timer > 0) {
+    sprite_index = spr_damaged;
+} else {
+    sprite_index = spr_run;
+}

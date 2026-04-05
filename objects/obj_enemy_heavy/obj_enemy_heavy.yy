@@ -3,13 +3,19 @@
   "%Name":"obj_enemy_heavy",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",}
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
   "name":"obj_enemy_heavy",
   "overriddenProperties":[],
-  "parent":{"name":"obj","path":"folders/obj.yy",},
-  "parentObjectId":{"name":"obj_enemy","path":"objects/obj_enemy/obj_enemy.yy",},
+  "parent":{
+    "name":"obj",
+    "path":"folders/obj.yy",
+  },
+  "parentObjectId":{
+    "name":"obj_enemy",
+    "path":"objects/obj_enemy/obj_enemy.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -27,7 +33,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{"name":"Sprite6","path":"sprites/Sprite6/Sprite6.yy",},
+  "spriteId":{
+    "name":"Sprite6",
+    "path":"sprites/Sprite6/Sprite6.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

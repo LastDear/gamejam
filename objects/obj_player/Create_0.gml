@@ -47,7 +47,7 @@ attack_rhythm_bonus = false;
 
 attack_rhythm_damage_mult = base_attack_rhythm_damage_mult;
 
-attack_hit_frame = 0;
+attack_hit_frame = 2;
 attack_damage = base_attack_damage;
 
 attack_knock_x = base_attack_knock_x;
@@ -95,3 +95,12 @@ last_rhythm_success = false;
 score = 0;
 score_hit_base = 100;
 score_rhythm_mult = base_score_rhythm_mult;
+
+stance_switch_cooldown_time = 24;
+stance_switch_cooldown = 0;
+stance_switch_bonus_time = 45;
+stance_switch_bonus_timer = 0;
+stance_switch_bonus_damage_mult = 1.25;
+stance_switch_bonus_move_mult = 1.20;
+stance_switch_bonus_score = 150;
+stance_switch_bonus_active = false;

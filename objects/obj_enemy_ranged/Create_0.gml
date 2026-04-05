@@ -15,3 +15,9 @@ projectile_speed = 8;
 
 fire_offset_x = 10;
 fire_offset_y = -8;
+
+spr_run = spr_crois_run;
+spr_hit = spr_crois_hit;
+spr_damaged = spr_crois_damaged;
+sprite_index = spr_run;
+image_speed = 1;

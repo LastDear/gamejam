@@ -32,10 +32,22 @@ if (dash_cooldown_time > 0) {
 }
 dash_cd_ratio = clamp(dash_cd_ratio, 0, 1);
 
+var stance_cd_ratio = 1;
+if (stance_switch_cooldown_time > 0) {
+    stance_cd_ratio = 1 - (stance_switch_cooldown / stance_switch_cooldown_time);
+}
+stance_cd_ratio = clamp(stance_cd_ratio, 0, 1);
+
+var stance_bonus_ratio = 0;
+if (stance_switch_bonus_time > 0) {
+    stance_bonus_ratio = stance_switch_bonus_timer / stance_switch_bonus_time;
+}
+stance_bonus_ratio = clamp(stance_bonus_ratio, 0, 1);
+
 // фон панели HP
 draw_set_alpha(0.8);
 draw_set_color(c_black);
-draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 34, false);
+draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 64, false);
 
 // HP
  draw_set_alpha(1);
@@ -53,11 +65,16 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 34, false);
  draw_set_color(stance_color);
  draw_text(score_x, score_y + 28, "STANCE: " + stance_name + "  [1-4]");
  draw_set_color(c_white);
+ if (stance_switch_bonus_active) {
+     draw_set_color(make_color_rgb(255, 240, 120));
+     draw_text(score_x, score_y + 56, "BEAT SHIFT BONUS");
+     draw_set_color(c_white);
+ }
 
 // Индикатор ритма сверху
  draw_set_alpha(0.85);
  draw_set_color(c_black);
- draw_roundrect(rhythm_x1 - 12, rhythm_y1 - 12, rhythm_x2 + 12, rhythm_y2 + 42, false);
+ draw_roundrect(rhythm_x1 - 12, rhythm_y1 - 12, rhythm_x2 + 12, rhythm_y2 + 72, false);
 
  draw_set_alpha(1);
  draw_set_color(make_color_rgb(50, 50, 50));
@@ -80,20 +97,42 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 34, false);
  }
 
  // Индикатор CD dash
- var dash_bar_w = 120;
- var dash_bar_h = 12;
- var dash_bar_x = rhythm_x2 - dash_bar_w;
+ var bar_gap = 18;
+ var mini_bar_w = 120;
+ var mini_bar_h = 12;
+ var dash_bar_x = rhythm_x2 - mini_bar_w;
  var dash_bar_y = rhythm_y2 + 12;
  draw_set_color(make_color_rgb(60, 60, 60));
- draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + dash_bar_w, dash_bar_y + 18 + dash_bar_h, false);
+ draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, false);
  draw_set_color(make_color_rgb(120, 180, 255));
- draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + dash_bar_w * dash_cd_ratio, dash_bar_y + 18 + dash_bar_h, false);
+ draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + mini_bar_w * dash_cd_ratio, dash_bar_y + 18 + mini_bar_h, false);
  draw_set_color(c_white);
- draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + dash_bar_w, dash_bar_y + 18 + dash_bar_h, true);
+ draw_rectangle(dash_bar_x, dash_bar_y + 18, dash_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, true);
  draw_text(dash_bar_x, dash_bar_y, "DASH CD");
+
+ // Индикатор CD стойки
+ var stance_bar_x = dash_bar_x - mini_bar_w - bar_gap;
+ draw_set_color(make_color_rgb(60, 60, 60));
+ draw_rectangle(stance_bar_x, dash_bar_y + 18, stance_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, false);
+ draw_set_color(make_color_rgb(255, 190, 90));
+ draw_rectangle(stance_bar_x, dash_bar_y + 18, stance_bar_x + mini_bar_w * stance_cd_ratio, dash_bar_y + 18 + mini_bar_h, false);
+ draw_set_color(c_white);
+ draw_rectangle(stance_bar_x, dash_bar_y + 18, stance_bar_x + mini_bar_w, dash_bar_y + 18 + mini_bar_h, true);
+ draw_text(stance_bar_x, dash_bar_y, "STANCE CD");
+
+ // Индикатор бонуса от смены в бит
+ var bonus_bar_x = rhythm_x1;
+ var bonus_bar_w = 140;
+ draw_set_color(make_color_rgb(60, 60, 60));
+ draw_rectangle(bonus_bar_x, dash_bar_y + 18, bonus_bar_x + bonus_bar_w, dash_bar_y + 18 + mini_bar_h, false);
+ draw_set_color(make_color_rgb(255, 230, 120));
+ draw_rectangle(bonus_bar_x, dash_bar_y + 18, bonus_bar_x + bonus_bar_w * stance_bonus_ratio, dash_bar_y + 18 + mini_bar_h, false);
+ draw_set_color(c_white);
+ draw_rectangle(bonus_bar_x, dash_bar_y + 18, bonus_bar_x + bonus_bar_w, dash_bar_y + 18 + mini_bar_h, true);
+ draw_text(bonus_bar_x, dash_bar_y, "SHIFT BONUS");
 
  // Короткий фидбек
  if (rhythm_feedback_timer > 0) {
      draw_set_color(c_white);
-     draw_text((display_get_gui_width() * 0.5) - 60, rhythm_y2 + 52, rhythm_feedback_text);
+     draw_text((display_get_gui_width() * 0.5) - 90, rhythm_y2 + 82, rhythm_feedback_text);
  }
