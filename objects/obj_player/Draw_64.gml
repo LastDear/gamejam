@@ -50,6 +50,9 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 34, false);
 // Счёт
  draw_set_color(c_white);
  draw_text(score_x, score_y, "SCORE: " + string(score));
+ draw_set_color(stance_color);
+ draw_text(score_x, score_y + 28, "STANCE: " + stance_name + "  [1-4]");
+ draw_set_color(c_white);
 
 // Индикатор ритма сверху
  draw_set_alpha(0.85);
@@ -68,6 +71,7 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 34, false);
  draw_line_width(marker_x, rhythm_y1 - 4, marker_x, rhythm_y2 + 4, 3);
 
  draw_text(rhythm_x1, rhythm_y2 + 8, "RHYTHM");
+ draw_text(rhythm_x1, rhythm_y2 + 26, "1 Harder  2 Better  3 Faster  4 Stronger");
  var beat_center = rhythm_interval * 0.5;
  if (abs(rhythm_timer - beat_center) <= rhythm_window) {
      draw_text(rhythm_x1 + 90, rhythm_y2 + 8, "ON BEAT");
@@ -91,5 +95,5 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 34, false);
  // Короткий фидбек
  if (rhythm_feedback_timer > 0) {
      draw_set_color(c_white);
-     draw_text((display_get_gui_width() * 0.5) - 60, rhythm_y2 + 34, rhythm_feedback_text);
+     draw_text((display_get_gui_width() * 0.5) - 60, rhythm_y2 + 52, rhythm_feedback_text);
  }

@@ -17,7 +17,7 @@
   ],
   "gridX":0,
   "gridY":0,
-  "height":48,
+  "height":144,
   "HTile":false,
   "layers":[
     {"$GMImageLayer":"","%Name":"1a817dc4-e62c-4642-b066-079d57c51cb1","blendMode":0,"displayName":"Layer 1","isLocked":false,"name":"1a817dc4-e62c-4642-b066-079d57c51cb1","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
@@ -28,8 +28,8 @@
   "nineSlice":null,
   "origin":9,
   "parent":{
-    "name":"stronger",
-    "path":"folders/Sprites/stronger.yy",
+    "name":"spr",
+    "path":"folders/spr.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
@@ -81,8 +81,8 @@
     ],
     "visibleRange":null,
     "volume":1.0,
-    "xorigin":13,
-    "yorigin":45,
+    "xorigin":39,
+    "yorigin":135,
   },
   "swatchColours":null,
   "swfPrecision":0.5,
@@ -92,5 +92,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":48,
+  "width":144,
 }
