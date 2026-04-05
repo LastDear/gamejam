@@ -6,8 +6,8 @@ menu_state = 0;
 button_scale = 0.55;
 button_gap = 28;
 button_hover_scale = 1.05;
-credits_text = "AUTHORS\nSugar Free team\n(edit this text in obj_menu_main/Create_0.gml)";
-options_text = "OPTIONS\nEsc - back / restart room\nShift - dash\n1-4 - stances\nLMB - attack";
+credits_text = "AUTHORS\nJhiguli team";
+options_text = "INFO\nEsc - back / restart room\nShift - dash\n1 - Harder — more health and survivability.\n2 - Better — higher score gain and efficiency.\n3 - Faster — more speed and mobility.\n4 - Stronger — stronger attacks, more damage.\nLMB - attack \nDo on beat, earn score and rank";
 
 level_button_scale = 5.0;
 level_button_gap = 48;
