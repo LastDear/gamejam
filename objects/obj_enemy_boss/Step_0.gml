@@ -1,3 +1,38 @@
+if (boss_dead) {
+    hspd = 0;
+    vspd = 0;
+    image_speed = 0.15;
+    boss_death_timer--;
+    if (boss_death_timer <= 0) {
+        audio_stop_all();
+        if (!variable_global_exists("level_unlocked")) global.level_unlocked = [true, false, false, false, false];
+        if (!variable_global_exists("level_best_score")) global.level_best_score = [0, 0, 0, 0, 0];
+        if (!variable_global_exists("level_best_rank")) global.level_best_rank = ["", "", "", "", ""];
+        if (!variable_global_exists("level_max_score")) global.level_max_score = [14700, 16800, 12180, 23310, 12600];
+
+        var final_score = 0;
+        var pl = instance_find(obj_player, 0);
+        if (pl != noone) final_score = pl.run_score;
+        if (final_score > global.level_best_score[4]) global.level_best_score[4] = final_score;
+
+        var ratio = 0;
+        if (global.level_max_score[4] > 0) ratio = final_score / global.level_max_score[4];
+        var final_rank = "C";
+        if (ratio >= 1.0) final_rank = "SS";
+        else if (ratio >= 0.9) final_rank = "S";
+        else if (ratio >= 0.8) final_rank = "A";
+        else if (ratio >= 0.7) final_rank = "B";
+        global.level_best_rank[4] = final_rank;
+
+        global.menu_open_level_select = true;
+        room_goto(RoomMenu);
+    }
+    event_inherited();
+    sprite_index = spr_damaged;
+    image_xscale = attack_dir > 0 ? -1 : 1;
+    exit;
+}
+
 var player = instance_nearest(x, y, obj_player);
 if (attack_cooldown > 0) attack_cooldown--;
 if (action_anim_timer > 0) action_anim_timer--;
@@ -48,6 +83,7 @@ if (hurt_timer > 0) {
             if (state_timer <= 0) {
                 state = "jump_attack";
                 landed_attack = false;
+                audio_play_sound(snd_boss_attack, 1, false);
                 hspd = attack_dir * jump_hspd;
                 vspd = jump_vspd;
             }
@@ -59,6 +95,7 @@ if (hurt_timer > 0) {
                 state = "recover";
                 state_timer = 22;
                 action_anim_timer = action_anim_time;
+                audio_play_sound(snd_boss_landing, 1, false);
                 effect_create_above(ef_ring, x, bbox_bottom, 2, c_red);
                 effect_create_above(ef_smoke, x, bbox_bottom, 2, c_gray);
                 with (obj_player) {
@@ -78,6 +115,7 @@ if (hurt_timer > 0) {
             if (state_timer <= 0) {
                 state = "charge_attack";
                 state_timer = charge_time_max;
+                audio_play_sound(snd_boss_attack, 1, false);
                 hspd = attack_dir * charge_speed;
             }
             break;
@@ -99,6 +137,7 @@ if (hurt_timer > 0) {
             action_anim_timer = action_anim_time;
             if (state_timer <= 0) {
                 state = "slam_attack";
+                audio_play_sound(snd_boss_attack, 1, false);
                 slam_hit_done = false;
                 image_index = 0;
                 image_speed = 1;

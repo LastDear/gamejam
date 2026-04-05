@@ -12,6 +12,7 @@ function scr_player_take_damage(_player, _damage, _knock_x, _knock_y)
     _player.hp -= final_damage;
     _player.hurt_timer = _player.hurt_time;
     _player.image_blend = c_red;
+    audio_play_sound(snd_player_take_damage, 1, false);
 
     _player.knock_hspd += _knock_x;
     _player.vspd = min(_player.vspd, _knock_y);

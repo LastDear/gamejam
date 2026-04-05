@@ -61,15 +61,10 @@ draw_roundrect(ui_x - 8, ui_y - 8, ui_x + bar_w + 8, ui_y + bar_h + 100, false);
 
 // Счёт
  draw_set_color(c_white);
- draw_text(score_x, score_y, "SCORE: " + string(score));
+ draw_text(score_x, score_y, "SCORE: " + string(run_score));
  draw_set_color(stance_color);
- draw_text(score_x, score_y + 28, "STANCE: " + stance_name + "  [1-4]");
+ draw_text(score_x, score_y + 28, "STANCE: " + stance_name);
  draw_set_color(c_white);
- if (stance_switch_bonus_active) {
-     draw_set_color(make_color_rgb(255, 240, 120));
-     draw_text(score_x, score_y + 56, "SCORE BUFF x" + string(stance_switch_bonus_score_mult));
-     draw_set_color(c_white);
- }
 
 // Индикатор ритма сверху
  draw_set_alpha(0.85);

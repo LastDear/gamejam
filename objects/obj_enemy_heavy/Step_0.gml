@@ -53,6 +53,7 @@ if (hurt_timer > 0) {
                 state = "recover";
                 state_timer = slam_recover_max;
 
+                audio_play_sound(snd_golem_attack, 1, false);
                 effect_create_above(ef_ring, x, bbox_bottom, 1, c_orange);
                 for (var d = 16; d <= slam_particle_dist; d += 16) {
                     effect_create_above(ef_spark, x + d, bbox_bottom, 1, c_yellow);

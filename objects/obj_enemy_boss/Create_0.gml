@@ -1,6 +1,6 @@
 event_inherited();
 
-hp = 320;
+hp = 600;
 weight = 3.0;
 ignore_knockback = true;
 move_dir = 1;
@@ -20,14 +20,14 @@ attack_dir = 1;
 jump_damage = 24;
 jump_hspd = 4.6;
 jump_vspd = -9.5;
-jump_land_radius = 200;
+jump_land_radius = 180;
 
 charge_damage = 20;
 charge_speed = 8.5;
 charge_time_max = 24;
 
 slam_damage = 28;
-slam_range =200;
+slam_range =300;
 slam_height = 100;
 slam_hit_done = false;
 
@@ -43,3 +43,7 @@ spr_hit = spr_boss_hit;
 spr_damaged = spr_boss_damaged;
 sprite_index = spr_idle;
 image_speed = 1;
+
+
+boss_dead = false;
+boss_death_timer = room_speed * 2;

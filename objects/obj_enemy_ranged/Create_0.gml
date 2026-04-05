@@ -13,8 +13,8 @@ shoot_cooldown_max = 75;
 shoot_cooldown = irandom_range(20, 45);
 projectile_speed = 8;
 
-fire_offset_x = 10;
-fire_offset_y = -8;
+fire_offset_x = 20;
+fire_offset_y = -60;
 
 spr_run = spr_crois_run;
 spr_hit = spr_crois_hit;

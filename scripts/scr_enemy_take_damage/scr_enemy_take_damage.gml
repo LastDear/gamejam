@@ -43,6 +43,16 @@ function scr_enemy_take_damage(_enemy, _damage, _knock_x, _knock_y)
             effect_create_above(ef_smoke, kx, ky, 1, choose(jam_main, jam_light));
             effect_create_above(ef_spark, kx, ky, 1, jam_main);
         }
-        instance_destroy(_enemy);
+
+        if (_enemy.object_index == obj_enemy_boss) {
+            _enemy.hp = 0;
+            _enemy.boss_dead = true;
+            _enemy.boss_death_timer = room_speed * 2;
+            _enemy.state = "dead";
+            _enemy.hspd = 0;
+            _enemy.vspd = 0;
+        } else {
+            instance_destroy(_enemy);
+        }
     }
 }

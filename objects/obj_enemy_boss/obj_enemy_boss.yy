@@ -37,6 +37,9 @@
     "name":"spr_boss_idle",
     "path":"sprites/spr_boss_idle/spr_boss_idle.yy",
   },
-  "spriteMaskId":null,
+  "spriteMaskId":{
+    "name":"spr_boss_idle",
+    "path":"sprites/spr_boss_idle/spr_boss_idle.yy",
+  },
   "visible":true,
 }

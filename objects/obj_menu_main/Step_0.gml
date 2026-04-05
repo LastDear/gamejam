@@ -1,3 +1,5 @@
+if (variable_global_exists("level_unlocked")) level_unlock_placeholder = global.level_unlocked;
+
 var gui_w = display_get_gui_width();
 var gui_h = display_get_gui_height();
 var mx = device_mouse_x_to_gui(0);

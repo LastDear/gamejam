@@ -93,8 +93,8 @@ rhythm_feedback_timer = 0;
 rhythm_feedback_text = "";
 last_rhythm_success = false;
 
-score = 0;
-score_hit_base = 100;
+run_score = 0;
+score_hit_base = 10;
 score_rhythm_mult = base_score_rhythm_mult;
 
 stance_switch_cooldown_time = 200;
@@ -111,3 +111,7 @@ camera_follow_lerp = 0.8;
 parallax_x_factor = 0.8;
 parallax_y_factor = 0.08;
 room1_camera_enabled = true;
+
+
+walk_sfx_timer = 0;
+walk_sfx_interval = 18;

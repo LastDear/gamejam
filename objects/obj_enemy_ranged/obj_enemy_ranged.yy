@@ -33,7 +33,13 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{"name":"spr_crois_run","path":"sprites/spr_crois_run/spr_crois_run.yy",},
-  "spriteMaskId":null,
+  "spriteId":{
+    "name":"spr_crois_run",
+    "path":"sprites/spr_crois_run/spr_crois_run.yy",
+  },
+  "spriteMaskId":{
+    "name":"spr_crois_run",
+    "path":"sprites/spr_crois_run/spr_crois_run.yy",
+  },
   "visible":true,
 }

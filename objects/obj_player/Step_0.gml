@@ -11,13 +11,29 @@ var space = keyboard_check_pressed(vk_space);
 var attack = mouse_check_button_pressed(mb_left);
 var dash = keyboard_check_pressed(vk_shift);
 
+if (keyboard_check_pressed(vk_escape)) {
+    audio_stop_all();
+    global.menu_open_level_select = true;
+    room_goto(RoomMenu);
+}
+
 // =========================
 // РИТМ
 // =========================
-rhythm_timer += 1;
-if (rhythm_timer >= rhythm_interval) {
-    rhythm_timer -= rhythm_interval;
+if (variable_global_exists("current_room_bpm")) {
+    rhythm_bpm = global.current_room_bpm;
 }
+rhythm_interval = room_speed * 60 / max(1, rhythm_bpm);
+
+var beat_len_sec = 60 / max(1, rhythm_bpm);
+var music_pos_sec = variable_global_exists("current_music_track_pos") ? global.current_music_track_pos : 0;
+var bar_start_sec = variable_global_exists("current_room_bar_start_sec") ? global.current_room_bar_start_sec : 0;
+var beat_pos_sec = music_pos_sec - bar_start_sec;
+while (beat_pos_sec < 0) {
+    beat_pos_sec += beat_len_sec;
+}
+beat_pos_sec = beat_pos_sec mod beat_len_sec;
+rhythm_timer = beat_pos_sec * room_speed;
 
 var beat_phase = rhythm_timer;
 var beat_center = rhythm_interval * 0.5;
@@ -60,7 +76,7 @@ var stance_change_requested = (requested_stance != stance_mode || stance_name ==
 var allow_stance_change = (stance_switch_cooldown <= 0 || stance_name == "");
 
 if (stance_change_requested && allow_stance_change) {
-    var_ratio_keep = 1;
+    var hp_ratio_keep = 1;
     if (max_hp > 0) hp_ratio_keep = hp / max_hp;
     stance_mode = requested_stance;
 
@@ -189,6 +205,7 @@ if (dash && !is_dashing && !is_attacking && dash_cooldown <= 0) {
     dash_rhythm_invul = in_rhythm;
 
     is_dashing = true;
+    audio_play_sound(snd_dash, 1, false);
     dash_timer = dash_time;
     dash_hspd = (dir ? 1 : -1) * dash_speed;
 
@@ -235,7 +252,10 @@ if (is_dashing) {
     var move_hspd = (d - a) * current_move_speed;
     hspd = move_hspd + knock_hspd;
 
-    if (on_ground && space) vspd = jump_speed;
+    if (on_ground && space) {
+        vspd = jump_speed;
+        audio_play_sound(snd_jump, 1, false);
+    }
     if (!on_ground) vspd += grav_acc;
     vspd = clamp(vspd, -100, max_fall_speed);
 }
@@ -269,6 +289,7 @@ if (attack && !is_attacking && !attack_cooldown && !is_dashing) {
     }
 
     sprite_index = spr_attack;
+    audio_play_sound(snd_player_attack, 1, false);
     image_index = 0;
     image_speed = attack_anim_speed;
     alarm[0] = ceil(room_speed * attack_cooldown_time);
@@ -308,8 +329,11 @@ if (is_attacking) {
 
         for (var i = 0; i < ds_list_size(list); i++) {
             var enemy = list[| i];
-            scr_enemy_take_damage(enemy, attack_damage * damage_mult, dir ? attack_knock_x : -attack_knock_x, attack_knock_y);
-            score += round(score_hit_base * score_mult);
+            var raw_damage = attack_damage * damage_mult;
+            var hp_before = enemy.hp;
+            scr_enemy_take_damage(enemy, raw_damage, dir ? attack_knock_x : -attack_knock_x, attack_knock_y);
+            var dealt_damage = min(hp_before, raw_damage);
+            run_score += round(dealt_damage * score_hit_base * score_mult);
         }
         ds_list_destroy(list);
     }
@@ -375,7 +399,7 @@ if (place_meeting(x, y, obj_wall)) {
 // =========================
 // КАМЕРА / ПАРАЛЛАКС ROOM1
 // =========================
-if (room == Room1 && room1_camera_enabled && view_enabled) {
+if ((room == Room1 || room == Room2 || room == Room3 || room == Room4) && room1_camera_enabled && view_enabled) {
     var cam = view_camera[0];
     if (cam != -1) {
         var view_w = camera_get_view_width(cam);

@@ -47,6 +47,7 @@ if (hurt_timer <= 0) {
             var dir_angle = point_direction(spawn_x, spawn_y, player.x, target_y);
 
             fire_anim_timer = fire_anim_time;
+            audio_play_sound(snd_range_fire, 1, false);
 
             var bullet = instance_create_layer(spawn_x, spawn_y, "Instances", obj_enemy_projectile);
             bullet.hspd = lengthdir_x(projectile_speed, dir_angle);

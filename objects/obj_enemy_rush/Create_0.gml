@@ -1,11 +1,11 @@
 event_inherited();
 
-hp = 75;
+hp = 100;
 weight = 0.9;
 move_dir = 1;
 
 patrol_speed = 2.6;
-charge_speed = 7.5;
+charge_speed = 6;
 edge_check_dist = 18;
 detection_range = 260;
 charge_windup_max = 12;
@@ -14,7 +14,7 @@ charge_cooldown_max = 45;
 
 charge_windup = 0;
 charge_duration = 0;
-charge_cooldown = irandom_range(10, 25);
+charge_cooldown = 120;
 charge_dir = 1;
 is_charging = false;
 

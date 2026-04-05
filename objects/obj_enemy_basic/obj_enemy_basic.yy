@@ -33,7 +33,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{"name":"spr_candy_run","path":"sprites/spr_candy_run/spr_candy_run.yy",},
+  "spriteId":{
+    "name":"spr_candy_run",
+    "path":"sprites/spr_candy_run/spr_candy_run.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

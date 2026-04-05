@@ -35,6 +35,33 @@ if (menu_state == 3) {
             draw_sprite_ext(spr, 0, x_btn, row_y, level_button_scale, level_button_scale, 0, make_color_rgb(120, 120, 120), 0.55);
             draw_sprite_ext(spr_button_level_locked, 0, x_btn, row_y, level_button_scale, level_button_scale, 0, c_white, 0.95);
         }
+
+        var rank_text = "--";
+        var rank_color = c_white;
+        if (variable_global_exists("level_best_score") && variable_global_exists("level_max_score")) {
+            var best_score = global.level_best_score[i];
+            var max_score = global.level_max_score[i];
+            if (best_score > 0 && max_score > 0) {
+                var ratio = best_score / max_score;
+                if (ratio >= 1.0) {
+                    rank_text = "SS";
+                    rank_color = make_color_rgb(255, 240, 120);
+                } else if (ratio >= 0.8) {
+                    rank_text = "S";
+                    rank_color = make_color_rgb(255, 210, 90);
+                } else if (ratio >= 0.6) {
+                    rank_text = "A";
+                    rank_color = make_color_rgb(120, 220, 120);
+                } else if (ratio >= 0.4) {
+                    rank_text = "B";
+                    rank_color = make_color_rgb(120, 180, 255);
+                } else {
+                    rank_text = "C";
+                    rank_color = make_color_rgb(210, 210, 210);
+                }
+            }
+        }
+        draw_text_transformed_color(x_btn, row_y - btn_size * 0.95, rank_text, 2.3, 2.3, 0, rank_color, rank_color, rank_color, rank_color, unlocked ? 1 : 0.6);
     }
 
     draw_set_halign(fa_left);
