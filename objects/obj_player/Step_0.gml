@@ -5,169 +5,362 @@ var a = keyboard_check(ord("A"));
 var d = keyboard_check(ord("D"));
 var k1 = keyboard_check_pressed(ord("1"));
 var k2 = keyboard_check_pressed(ord("2"));
+var k3 = keyboard_check_pressed(ord("3"));
+var k4 = keyboard_check_pressed(ord("4"));
 var space = keyboard_check_pressed(vk_space);
 var attack = mouse_check_button_pressed(mb_left);
-if (keyboard_check(ord("D"))) facing = 1;
-if (keyboard_check(ord("A"))) facing = -1;
+var dash = keyboard_check_pressed(vk_shift);
 
-
-// =========================
-// СМЕНА СПРАЙТА СТОЙКИ
-// =========================
-if (!is_attacking) {
-    if (k1) spr_idle = Sprite1;
-    if (k2) spr_idle = Sprite3;
-}
-if (dash_cooldown_timer > 0) dash_cooldown_timer--;
-if (dash_timer > 0) dash_timer--;
-
-if (keyboard_check_pressed(vk_shift) && dash_cooldown_timer <= 0 && !is_dashing) {
-    if (keyboard_check(ord("D"))) dash_dir = 1;
-    else if (keyboard_check(ord("A"))) dash_dir = -1;
-    else dash_dir = facing;
-
-    is_dashing = true;
-    dash_timer = dash_duration;
-    dash_cooldown_timer = dash_cooldown;
+if (keyboard_check_pressed(vk_escape)) {
+    audio_stop_all();
+    global.menu_open_level_select = true;
+    room_goto(RoomMenu);
 }
 
 // =========================
-// ДВИЖЕНИЕ
+// РИТМ
 // =========================
-hspd = (d - a) * move_speed;
+if (variable_global_exists("current_room_bpm")) {
+    rhythm_bpm = global.current_room_bpm;
+}
+rhythm_interval = room_speed * 60 / max(1, rhythm_bpm);
 
+var beat_len_sec = 60 / max(1, rhythm_bpm);
+var music_pos_sec = variable_global_exists("current_music_track_pos") ? global.current_music_track_pos : 0;
+var bar_start_sec = variable_global_exists("current_room_bar_start_sec") ? global.current_room_bar_start_sec : 0;
+var beat_pos_sec = music_pos_sec - bar_start_sec;
+while (beat_pos_sec < 0) {
+    beat_pos_sec += beat_len_sec;
+}
+beat_pos_sec = beat_pos_sec mod beat_len_sec;
+rhythm_timer = beat_pos_sec * room_speed;
+
+var beat_phase = rhythm_timer;
+var beat_center = rhythm_interval * 0.5;
+var beat_distance = abs(beat_phase - beat_center);
+var in_rhythm = (beat_distance <= rhythm_window);
+
+// =========================
+// ТАЙМЕРЫ
+// =========================
+if (hurt_timer > 0) {
+    hurt_timer--;
+    if (hurt_timer <= 0) {
+        image_blend = c_white;
+    }
+}
+if (invulnerable_timer > 0) invulnerable_timer--;
+if (dash_cooldown > 0) dash_cooldown--;
+if (rhythm_feedback_timer > 0) rhythm_feedback_timer--;
+if (stance_switch_cooldown > 0) stance_switch_cooldown--;
+if (stance_switch_bonus_timer > 0) {
+    stance_switch_bonus_timer--;
+    stance_switch_bonus_active = true;
+} else {
+    stance_switch_bonus_active = false;
+}
+
+knock_hspd *= knock_friction;
+if (abs(knock_hspd) < 0.1) knock_hspd = 0;
+
+// =========================
+// СТОЙКИ
+// =========================
+var requested_stance = stance_mode;
+if (k1) requested_stance = 1;
+if (k2) requested_stance = 2;
+if (k3) requested_stance = 3;
+if (k4) requested_stance = 4;
+
+var stance_change_requested = (requested_stance != stance_mode || stance_name == "");
+var allow_stance_change = (stance_switch_cooldown <= 0 || stance_name == "");
+
+if (stance_change_requested && allow_stance_change) {
+    var hp_ratio_keep = 1;
+    if (max_hp > 0) hp_ratio_keep = hp / max_hp;
+    stance_mode = requested_stance;
+
+    move_speed = base_move_speed;
+    jump_speed = base_jump_speed;
+    grav_acc = base_grav_acc;
+    max_fall_speed = base_max_fall_speed;
+    attack_damage = base_attack_damage;
+    attack_knock_x = base_attack_knock_x;
+    attack_knock_y = base_attack_knock_y;
+    attack_anim_speed = base_attack_anim_speed;
+    attack_cooldown_time = base_attack_cooldown_time;
+    dash_speed = base_dash_speed;
+    dash_time = base_dash_time;
+    dash_cooldown_time = base_dash_cooldown_time;
+    dash_rhythm_speed_bonus = base_dash_rhythm_speed_bonus;
+    dash_rhythm_time_bonus = base_dash_rhythm_time_bonus;
+    attack_rhythm_damage_mult = base_attack_rhythm_damage_mult;
+    score_rhythm_mult = base_score_rhythm_mult;
+    rhythm_window = base_rhythm_window;
+    damage_taken_mult = 1.0;
+    max_hp = base_max_hp;
+
+    switch (stance_mode) {
+        case 1: // HARDER
+            stance_name = "HARDER";
+            stance_color = make_color_rgb(220, 90, 90);
+            spr_idle = spr_h_player_idle;
+            spr_run = spr_h_player_run;
+            spr_jump = spr_h_player_jump;
+            spr_dash = spr_h_player_dodge;
+            spr_hurt = spr_h_player_idle;
+            spr_attack = spr_h_player_hit;
+            move_speed = 3.3;
+            jump_speed = -11.2;
+            max_hp = 140;
+            damage_taken_mult = 0.75;
+            dash_cooldown_time = base_dash_cooldown_time * 1.4;
+            break;
+
+        case 2: // BETTER
+            stance_name = "BETTER";
+            stance_color = make_color_rgb(120, 220, 120);
+            spr_idle = spr_b_player_idle;
+            spr_run = spr_b_player_run;
+            spr_jump = spr_b_player_jump;
+            spr_dash = spr_b_player_dodge;
+            spr_hurt = spr_b_player_idle;
+            spr_attack = spr_b_player_hit;
+            rhythm_window = base_rhythm_window*1.3;
+            attack_rhythm_damage_mult = 1.35;
+            score_rhythm_mult = 1.40;
+            dash_cooldown_time = base_dash_cooldown_time;
+            break;
+
+        case 3: // FASTER
+            stance_name = "FASTER";
+            stance_color = make_color_rgb(90, 190, 255);
+            spr_idle = spr_f_player_idle;
+            spr_run = spr_f_player_run;
+            spr_jump = spr_f_player_jump;
+            spr_dash = spr_f_player_dodge;
+            spr_hurt = spr_f_player_idle;
+            spr_attack = spr_f_player_hit;
+            move_speed = 5.2;
+            jump_speed = -13.2;
+            max_fall_speed = 9.5;
+            dash_speed = 14;
+            dash_time = 9;
+            dash_rhythm_speed_bonus = 6;
+            dash_rhythm_time_bonus = 5;
+            dash_cooldown_time = base_dash_cooldown_time*0.8;
+            attack_damage = 21;
+            break;
+
+        case 4: // STRONGER
+            stance_name = "STRONGER";
+            stance_color = make_color_rgb(255, 210, 90);
+            spr_idle = spr_s_player_idle;
+            spr_run = spr_s_player_run;
+            spr_jump = spr_s_player_jump;
+            spr_dash = spr_s_player_dodge;
+            spr_hurt = spr_s_player_idle;
+            spr_attack = spr_s_player_hit;
+            move_speed = 3.7;
+            attack_damage = 34;
+            attack_knock_x = 14;
+            attack_knock_y = -3;
+            attack_cooldown_time = 0.42;
+            score_rhythm_mult = 1.30;
+			dash_cooldown_time = base_dash_cooldown_time * 1.2;
+            break;
+    }
+
+    hp = clamp(round(max_hp * hp_ratio_keep), 1, max_hp);
+
+    if (stance_name != "") {
+        stance_switch_cooldown = stance_switch_cooldown_time;
+
+        if (in_rhythm) {
+            stance_switch_bonus_timer = stance_switch_bonus_time;
+            stance_switch_bonus_active = true;
+            invulnerable_timer = max(invulnerable_timer, 15);
+            dash_cooldown = max(0, dash_cooldown - 10);
+            rhythm_feedback_text = "STANCE SHIFT ON BEAT!";
+            audio_play_sound(snd_hit, 1, false);
+        } else {
+            stance_switch_bonus_timer = 0;
+            stance_switch_bonus_active = false;
+            rhythm_feedback_text = "STANCE SHIFT";
+        }
+        rhythm_feedback_timer = 16;
+    }
+}
 
 // =========================
 // ПРОВЕРКА ПОЛА
 // =========================
 var on_ground = place_meeting(x, y + 1, obj_wall);
 
+// =========================
+// DASH
+// =========================
+if (dash && !is_dashing && !is_attacking && dash_cooldown <= 0) {
+    last_rhythm_success = in_rhythm;
+    dash_rhythm_invul = in_rhythm;
 
-// =========================
-// ПРЫЖОК
-// =========================
-if (on_ground && space) {
-    vspd = jump_speed;
+    is_dashing = true;
+    audio_play_sound(snd_dash, 1, false);
+    dash_timer = dash_time;
+    dash_hspd = (dir ? 1 : -1) * dash_speed;
+
+    if (stance_switch_bonus_active) {
+        dash_timer += 2;
+        dash_hspd += (dir ? 1 : -1) * 1.5;
+    }
+
+    if (in_rhythm) {
+        dash_timer += dash_rhythm_time_bonus;
+        dash_hspd += (dir ? 1 : -1) * dash_rhythm_speed_bonus;
+        invulnerable_timer = max(invulnerable_timer, dash_timer);
+        rhythm_feedback_text = "DASH ON BEAT!";
+        audio_play_sound(snd_hit, 1, false);
+    } else {
+        rhythm_feedback_text = "OFF BEAT";
+    }
+
+    rhythm_feedback_timer = 12;
+    dash_cooldown = dash_cooldown_time;
 }
 
+// =========================
+// ДВИЖЕНИЕ / ПРЫЖОК / ГРАВИТАЦИЯ
+// =========================
+if (is_dashing) {
+    hspd = dash_hspd;
+    vspd = 0;
 
-// =========================
-// СВОЯ ГРАВИТАЦИЯ
-// =========================
-if (!on_ground) {
-    vspd += grav_acc;
+    if (dash_rhythm_invul) {
+        invulnerable_timer = max(invulnerable_timer, dash_timer);
+    }
+
+    dash_timer--;
+    if (dash_timer <= 0) {
+        is_dashing = false;
+        dash_rhythm_invul = false;
+        hspd = 0;
+    }
+} else {
+    var current_move_speed = move_speed;
+    if (stance_switch_bonus_active) current_move_speed *= stance_switch_bonus_move_mult;
+
+    var move_hspd = (d - a) * current_move_speed;
+    hspd = move_hspd + knock_hspd;
+
+    if (on_ground && space) {
+        vspd = jump_speed;
+        audio_play_sound(snd_jump, 1, false);
+    }
+    if (!on_ground) vspd += grav_acc;
+    vspd = clamp(vspd, -100, max_fall_speed);
 }
-
-vspd = clamp(vspd, -100, max_fall_speed);
-
 
 // =========================
 // ПОВОРОТ
 // =========================
-if (hspd > 0) {
-    image_xscale = 1;
-    dir = true;
+if (!is_dashing) {
+    if (hspd > 0) {
+        image_xscale = 1;
+        dir = true;
+    } else if (hspd < 0) {
+        image_xscale = -1;
+        dir = false;
+    }
 }
-else if (hspd < 0) {
-    image_xscale = -1;
-    dir = false;
-}
-
 
 // =========================
 // СТАРТ АТАКИ
 // =========================
-if (attack && !is_attacking && !attack_cooldown) {
+if (attack && !is_attacking && !attack_cooldown && !is_dashing) {
     is_attacking = true;
     attack_cooldown = true;
     damage_applied = false;
+    attack_rhythm_bonus = in_rhythm;
+
+    if (attack_rhythm_bonus) {
+        rhythm_feedback_text = "HIT ON BEAT!";
+        rhythm_feedback_timer = 12;
+        audio_play_sound(snd_hit, 1, false);
+    }
 
     sprite_index = spr_attack;
+    audio_play_sound(snd_player_attack, 1, false);
     image_index = 0;
     image_speed = attack_anim_speed;
-
     alarm[0] = ceil(room_speed * attack_cooldown_time);
 }
-
 
 // =========================
 // ОБРАБОТКА АТАКИ
 // =========================
 if (is_attacking) {
-
     if (floor(image_index) >= attack_hit_frame && !damage_applied) {
         damage_applied = true;
 
         var hit_left, hit_right;
-
         if (dir) {
-            hit_left  = x + attack_offset_left;
+            hit_left = x + attack_offset_left;
             hit_right = x + attack_offset_right;
         } else {
-            hit_left  = x - attack_offset_right;
+            hit_left = x - attack_offset_right;
             hit_right = x - attack_offset_left;
         }
 
         var hit_top = y + attack_offset_top;
         var hit_bottom = y + attack_offset_bottom;
-
         var list = ds_list_create();
+        collision_rectangle_list(hit_left, hit_top, hit_right, hit_bottom, obj_enemy, false, false, list, true);
 
-        collision_rectangle_list(
-            hit_left,
-            hit_top,
-            hit_right,
-            hit_bottom,
-            obj_enemy,
-            false,
-            false,
-            list,
-            true
-        );
+        var damage_mult = 1;
+        var score_mult = 1;
+        if (attack_rhythm_bonus) {
+            damage_mult = attack_rhythm_damage_mult;
+            score_mult = score_rhythm_mult;
+        }
+        if (stance_switch_bonus_active) {
+            damage_mult *= stance_switch_bonus_damage_mult;
+            score_mult *= stance_switch_bonus_score_mult;
+        }
 
         for (var i = 0; i < ds_list_size(list); i++) {
             var enemy = list[| i];
-            scr_enemy_take_damage(
-                enemy,
-                attack_damage,
-                dir ? attack_knock_x : -attack_knock_x,
-                attack_knock_y
-            );
+            var raw_damage = attack_damage * damage_mult;
+            var hp_before = enemy.hp;
+            scr_enemy_take_damage(enemy, raw_damage, dir ? attack_knock_x : -attack_knock_x, attack_knock_y);
+            var dealt_damage = min(hp_before, raw_damage);
+            run_score += round(dealt_damage * score_hit_base * score_mult);
         }
-
         ds_list_destroy(list);
     }
 
     if (image_index >= image_number - 1) {
         is_attacking = false;
         damage_applied = false;
-
+        attack_rhythm_bonus = false;
         sprite_index = spr_idle;
         image_index = 0;
-        image_speed = 0.2;
+        image_speed = 1;
     }
-}
-else {
-    sprite_index = spr_idle;
-}
+} else {
+    var move_input = d - a;
+    var move_visual_speed = abs(hspd - knock_hspd);
 
-if (is_dashing) {
-    hsp = dash_dir * dash_speed;
-    vsp = 0;
-	vspd = 0
-
-    if (place_meeting(x + hsp, y, obj_wall)) {
-        is_dashing = false;
-        hsp = 0;
+    if (is_dashing) {
+        sprite_index = spr_dash;
+    } else if (hurt_timer > 0) {
+        sprite_index = spr_hurt;
+    } else if (!on_ground) {
+        sprite_index = spr_jump;
+    } else if (move_input != 0 || move_visual_speed > 0.2) {
+        sprite_index = spr_run;
     } else {
-        x += hsp;
+        sprite_index = spr_idle;
     }
-
-    if (dash_timer <= 0) {
-        is_dashing = false;
-    }
-
-    exit;
 }
 
 // =========================
@@ -175,20 +368,59 @@ if (is_dashing) {
 // =========================
 x += hspd;
 if (place_meeting(x, y, obj_wall)) {
-    while (place_meeting(x, y, obj_wall)) {
-        x -= sign(hspd);
+    if (hspd != 0) {
+        while (place_meeting(x, y, obj_wall)) {
+            x -= sign(hspd);
+        }
+    }
+
+    if (is_dashing) {
+        is_dashing = false;
+        dash_rhythm_invul = false;
+        dash_timer = 0;
     }
     hspd = 0;
 }
-
 
 // =========================
 // ДВИЖЕНИЕ ПО Y
 // =========================
 y += vspd;
 if (place_meeting(x, y, obj_wall)) {
-    while (place_meeting(x, y, obj_wall)) {
-        y -= sign(vspd);
+    if (vspd != 0) {
+        while (place_meeting(x, y, obj_wall)) {
+            y -= sign(vspd);
+        }
     }
     vspd = 0;
+}
+
+
+// =========================
+// КАМЕРА / ПАРАЛЛАКС ROOM1
+// =========================
+if ((room == Room1 || room == Room2 || room == Room3 || room == Room4) && room1_camera_enabled && view_enabled) {
+    var cam = view_camera[0];
+    if (cam != -1) {
+        var view_w = camera_get_view_width(cam);
+        var view_h = camera_get_view_height(cam);
+        var target_cam_x = clamp(x - view_w * 0.5, 0, max(0, room_width - view_w));
+        var target_cam_y = clamp(y - view_h * 0.5, 0, max(0, room_height - view_h));
+
+        var cam_x = camera_get_view_x(cam);
+        var cam_y = camera_get_view_y(cam);
+        cam_x = lerp(cam_x, target_cam_x, camera_follow_lerp);
+        cam_y = lerp(cam_y, target_cam_y, camera_follow_lerp);
+
+        if (abs(cam_x - target_cam_x) < 0.5) cam_x = target_cam_x;
+        if (abs(cam_y - target_cam_y) < 0.5) cam_y = target_cam_y;
+
+        camera_set_view_pos(cam, cam_x, cam_y);
+
+        var bg_layer = layer_get_id("Background");
+        if (bg_layer != -1) {
+            layer_x(bg_layer, cam_x * parallax_x_factor);
+            layer_y(bg_layer, cam_y * parallax_y_factor);
+        }
+    }
 }

@@ -40,10 +40,10 @@ vspd = clamp(vspd, -100, max_fall_speed);
 // ПОВОРОТ
 // =========================
 if (hspd > 0) {
-    image_xscale = 1;
+    image_xscale = -1;
 }
 else if (hspd < 0) {
-    image_xscale = -1;
+    image_xscale = 1;
 }
 
 
@@ -73,6 +73,32 @@ if (place_meeting(x, y, obj_wall)) {
 
 
 // =========================
+// КОНТАКТНЫЙ УРОН ПО ИГРОКУ
+// =========================
+if (place_meeting(x, y, obj_player)) {
+    var player = instance_place(x, y, obj_player);
+    if (player != noone) {
+        var knock_x = contact_knock_x * sign(player.x - x);
+        if (knock_x == 0) {
+            knock_x = contact_knock_x * move_dir;
+        }
+
+        scr_player_take_damage(player, contact_damage, knock_x, contact_knock_y);
+        action_anim_timer = action_anim_time;
+    }
+}
+
+// =========================
 // ОБЩАЯ ЛОГИКА РОДИТЕЛЯ
 // =========================
 event_inherited();
+
+if (action_anim_timer > 0) action_anim_timer--;
+
+if (hurt_timer > 0) {
+    sprite_index = spr_damaged;
+} else if (action_anim_timer > 0) {
+    sprite_index = spr_hit;
+} else {
+    sprite_index = spr_run;
+}
